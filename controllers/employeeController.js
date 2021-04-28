@@ -5,8 +5,84 @@ var ObjectId = require('mongoose').Types.ObjectId;
 //Local import
 //Importing Model
 var { Employee } = require('../models/employee.model');
+var { User } = require('../models/user');
 
 // localhost:3000/employees
+
+router.post('/register', (req, res) => {
+    let userData = req.body;
+    let user = new User(userData);
+    user.save((error, registeredUser) => {
+        if (error) {
+            console.log(error)
+        } else {
+            res.status(200).send(registeredUser)
+        }
+    });
+})
+
+router.post('/login', (req, res) => {
+    let userData = req.body;
+
+    User.findOne({ email: userData.email }, (error, user) => {
+        if (error) {
+            console.log(error)
+        } else {
+            if (!user) {
+                res.status(401).send('Invalid Email');
+            } else {
+                if (user.password !== userData.password) {
+                    res.status(401).send('Invalid password')
+                } else {
+                    res.status(200).send(user)
+                }
+            }
+        }
+    })
+});
+
+router.get('/events', (req, res) => {
+    let events = [
+        {
+            "_id": "1",
+            "name": "expo"
+        },
+        {
+            "_id": "2",
+            "name": "expo"
+        },
+        {
+            "_id": "3",
+            "name": "expo"
+        },
+        {
+            "_id": "4",
+            "name": "expo"
+        }]
+        res.json(events)
+});
+
+router.get('/special', (req, res) => {
+    let events = [
+        {
+            "_id": "1",
+            "name": "expo"
+        },
+        {
+            "_id": "2",
+            "name": "expo"
+        },
+        {
+            "_id": "3",
+            "name": "expo"
+        },
+        {
+            "_id": "4",
+            "name": "expo"
+        }]
+        res.json(events)
+});
+
 router.get('/', (req, res) => {
     Employee.find((err, docs) => {
         if (!err) { res.send(docs) }
